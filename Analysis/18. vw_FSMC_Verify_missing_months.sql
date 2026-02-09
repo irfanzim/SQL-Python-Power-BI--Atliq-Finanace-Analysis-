@@ -8,6 +8,6 @@ SELECT
         DATE_FORMAT(MIN(date), '%Y%m')
     ) + 1 as expected_month_count,
     COUNT(DISTINCT date) as actual_date_count
-FROM gdb041.fact_sales_monthly;
+FROM gdb041.fact_sales_monthly_cleaned;
 
 -- There is no missing months --
