@@ -18,9 +18,9 @@ FROM
 
 -- the values are same --
 
--- Count how many rows have NULL pid_pct -- 
+-- Count how many rows have NULL pre_invoice_discount_pct -- 
 SELECT COUNT(*) AS missing_pid_pct
 FROM vw_fact_sales_pid
-WHERE pid_pct IS NULL;
+WHERE pre_invoice_discount_pct IS NULL;
 
 -- no nulls detected --

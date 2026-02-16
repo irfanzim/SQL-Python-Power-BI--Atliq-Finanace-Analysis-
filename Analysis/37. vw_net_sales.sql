@@ -8,9 +8,12 @@ FROM
     INFORMATION_SCHEMA.COLUMNS
 WHERE 
     TABLE_NAME IN ('vw_net_invoice_sales','post_invoice_deductions')
-    AND COLUMN_NAME IN ('date','customer_code', 'product_code')
+    AND COLUMN_NAME IN ('date','customer_code', 'product_code');
     
--- no issues detected --
+-- datetime in vw_net_invoice_sales, date in post_invoice_deductions--
+-- fix date type --
+ALTER TABLE gdb056.post_invoice_deductions
+MODIFY COLUMN `date` DATETIME;
 
 -- Step 2a: Check for "Hidden" Whitespace or Case insensitivity in customer_code --
 SELECT 
@@ -103,7 +106,7 @@ LEFT JOIN
 	gdb056.post_invoice_deductions p 
     ON f.customer_code = p.customer_code
     AND f.product_code=p.product_code
-    AND f.`date`=date(p.`date`)
+    AND f.`date`=p.`date`
 WHERE p.customer_code is null
 	
 
@@ -115,7 +118,7 @@ WHERE p.customer_code is null
      INNER JOIN gdb056.post_invoice_deductions p 
         ON f.customer_code = p.customer_code
     AND f.product_code=p.product_code
-    AND f.`date`=date(p.`date`)) AS joined_count;
+    AND f.`date`=p.`date`) AS joined_count;
         
 -- After excluding 783 rows by using inner join, I found '1424923” rows --
 
@@ -129,6 +132,7 @@ SELECT
     f.customer_code,
     f.product_code,
     f.market,
+    f.sold_quantity,
     f.gross_sales,
     f.net_invoice_sales,
     (f.net_invoice_sales*(1-(p.discounts_pct+p.other_deductions_pct))) as net_sales
@@ -138,4 +142,4 @@ INNER JOIN
 	gdb056.post_invoice_deductions p 
     ON f.customer_code = p.customer_code
     AND f.product_code=p.product_code
-    AND f.`date`=date(p.`date`)
+    AND f.`date`=p.`date`

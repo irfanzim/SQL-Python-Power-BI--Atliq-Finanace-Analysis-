@@ -27,7 +27,7 @@ FROM
 	vw_gm
 
 -- the value for net_sales is 2875220015.39 in both dataset --
--- for manufacturing_cost the value is 76306019.29 in both dataset --
+-- for manufacturing_cost the value is 1709555909.92 in both dataset --
 
 -- Count how many rows have NULL gross_margin -- 
 SELECT COUNT(*) AS missing_gm
@@ -43,5 +43,5 @@ SELECT
 FROM 
 	vw_gm
     
--- Total COGS: 2862835899.97 --
--- Total GM: 12384115.41 --
+-- Total COGS: 1798246044.63 --
+-- Total GM: 1076973970.76 --

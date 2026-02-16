@@ -7,7 +7,7 @@ SELECT
 FROM 
     INFORMATION_SCHEMA.COLUMNS
 WHERE 
-    TABLE_NAME IN ('vw_fact_sales_gs', 'vw_pid')
+    TABLE_NAME IN ('vw_fact_sales_gs', 'pre_invoice_deductions')
     AND COLUMN_NAME IN ('customer_code', 'fiscal_year')
     
 -- no issues detected --
@@ -26,7 +26,7 @@ SELECT
     'pid' AS table_name,
     COUNT(*) AS non_standard_rows,
     GROUP_CONCAT(DISTINCT customer_code) AS examples
-FROM vw_pid
+FROM gdb056.pre_invoice_deductions
 WHERE customer_code != UPPER(TRIM(customer_code));
 
 -- No issues found --
@@ -46,7 +46,7 @@ SELECT
     SUM(CASE WHEN customer_code is null THEN 1 else 0 END) as null_customer_code,
     SUM(CASE WHEN fiscal_year is null THEN 1 else 0 END) as null_fiscal_year
 FROM
-	vw_pid
+	gdb056.pre_invoice_deductions
 
 -- Null count 0 --
 
@@ -56,7 +56,7 @@ SELECT
     f.customer_code,
     f.fiscal_year
 FROM vw_fact_sales_gs f
-LEFT JOIN vw_pid p
+LEFT JOIN gdb056.pre_invoice_deductions p
     ON f.customer_code = p.customer_code 
     AND f.fiscal_year = p.fiscal_year
 WHERE p.customer_code IS NULL;
@@ -68,7 +68,7 @@ WHERE p.customer_code IS NULL;
     (SELECT COUNT(*) FROM vw_fact_sales_gs) AS original_count,
     (SELECT COUNT(*) 
      FROM vw_fact_sales_gs f
-     INNER JOIN vw_pid p 
+     INNER JOIN gdb056.pre_invoice_deductions p 
         ON f.customer_code = p.customer_code 
     AND f.fiscal_year = p.fiscal_year) AS joined_count;
         
@@ -83,11 +83,12 @@ SELECT
     f.product_code,
     f.customer_code,
     f.market,
+    f.sold_quantity,
     f.gross_sales,
-    p.pid_pct
+    p.pre_invoice_discount_pct
 FROM 
 	vw_fact_sales_gs f
 LEFT JOIN
-	vw_pid p 
+	gdb056.pre_invoice_deductions p 
     ON f.customer_code = p.customer_code 
     AND f.fiscal_year = p.fiscal_year

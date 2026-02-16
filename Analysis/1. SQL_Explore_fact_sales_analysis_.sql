@@ -30,3 +30,7 @@ HAVING
     
 -- No rows return --
 -- The grain date+product_code+customer_code
+
+-- add index for fact_sales_monthly --
+Alter Table gdb041.fact_sales_monthly
+Add Index idx_fsm (customer_code,product_code,date)

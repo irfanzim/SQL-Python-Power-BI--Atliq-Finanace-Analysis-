@@ -7,7 +7,7 @@ SELECT
 FROM 
     INFORMATION_SCHEMA.COLUMNS
 WHERE 
-    TABLE_NAME IN ('vw_net_sales','vw_mc')
+    TABLE_NAME IN ('vw_net_sales','manufacturing_cost')
     AND COLUMN_NAME IN ('fiscal_year', 'product_code')
     
 -- no issues detected --
@@ -26,7 +26,7 @@ SELECT
     'MC' AS table_name,
     COUNT(*) AS non_standard_rows,
     GROUP_CONCAT(DISTINCT product_code) AS examples
-FROM vw_mc
+FROM gdb056.manufacturing_cost
 WHERE product_code != UPPER(TRIM(product_code));
 
 -- No issues found --
@@ -46,7 +46,7 @@ SELECT
 	SUM(CASE WHEN product_code is null THEN 1 else 0 END) as null_product_code,
     SUM(CASE WHEN fiscal_year is null THEN 1 else 0 END) as null_fy
 FROM
-	vw_mc
+	gdb056.manufacturing_cost
 
 -- Null count 0 --
 
@@ -56,7 +56,7 @@ SELECT
 	f.product_code,
     f.fiscal_year
 FROM vw_net_sales f
-LEFT JOIN vw_mc p
+LEFT JOIN gdb056.manufacturing_cost p
     ON f.product_code = p.product_code
     AND f.fiscal_year=p.fiscal_year
 WHERE p.product_code IS NULL
@@ -66,7 +66,7 @@ WHERE p.product_code IS NULL
 -- Step 5: Row Count Prediction --
 SELECT 
 	(SELECT COUNT(*) FROM vw_net_sales) AS original_count,
-    (SELECT COUNT(*) FROM vw_net_sales f INNER JOIN vw_mc p
+    (SELECT COUNT(*) FROM vw_net_sales f INNER JOIN gdb056.manufacturing_cost p
     ON f.product_code = p.product_code
     AND f.fiscal_year=p.fiscal_year) AS joined_count
         
@@ -78,8 +78,9 @@ Create or Replace View vw_NSMC as
 
 SELECT
 	f.*,
-    p.manufacturing_cost
+    (f.sold_quantity*p.manufacturing_cost) as manufacturing_cost
+    
 FROM vw_net_sales f
-LEFT JOIN vw_mc p
+LEFT JOIN gdb056.manufacturing_cost p
     ON f.product_code = p.product_code
     AND f.fiscal_year=p.fiscal_year

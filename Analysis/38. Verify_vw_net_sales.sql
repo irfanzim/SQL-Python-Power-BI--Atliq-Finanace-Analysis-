@@ -26,7 +26,8 @@ SELECT
 FROM
 	vw_net_sales
 
--- the values for gross_sales and net_invoice_sales are same --
+-- The values for gross_sales 5726646369.82 --
+-- The value for net_invoice_sales 4383891667.62 --
 
 -- Count how many rows have NULL net_sales -- 
 SELECT COUNT(*) AS missing_net_sales
