@@ -36,3 +36,8 @@ CREATE INDEX idx_oex_m_fy ON gdb041.operating_expense (market, fiscal_year);
 Describe gdb041.operating_expense
 
 -- market-> Text, fiscal_year-> int, ads & other -> double -- 
+
+/* Convert double to decimal */
+ALTER TABLE gdb041.operating_expense
+MODIFY ads_promotions_pct DECIMAL(25,10),
+MODIFY other_operational_expense_pct DECIMAL(25,10);

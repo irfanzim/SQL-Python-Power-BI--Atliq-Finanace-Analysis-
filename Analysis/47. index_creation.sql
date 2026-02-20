@@ -5,9 +5,13 @@ CREATE INDEX idx_pid_cc_fy ON gdb056.pre_invoice_deductions (customer_code, fisc
 CREATE INDEX idx_pid_cover ON gdb056.post_invoice_deductions (customer_code, product_code, date, discounts_pct, other_deductions_pct);
 CREATE INDEX idx_mc_pc_fy on gdb056.manufacturing_cost (product_code,fiscal_year);
 Create Index idx_fc_m_fy on gdb056.freight_cost (market,fiscal_year)
+CREATE INDEX idx_fsm_fy_market ON fact_sales_monthly (fiscal_year, market);
+
+
 
 
 -- show index for gdb056.gross_price --
+SHOW INDEX from fact_sales_monthly
 SHOW INDEX from gdb056.gross_price 
 SHOW INDEX from gdb056.pre_invoice_deductions
 SHOW INDEX from gdb056.manufacturing_cost
